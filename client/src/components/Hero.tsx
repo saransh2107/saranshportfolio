@@ -11,7 +11,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#FF7B29] via-[#FFB627] to-[#FF9D4D] bg-clip-text text-transparent">
             Creative Developer & Designer
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
@@ -32,7 +32,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="relative h-[500px] hidden md:block"
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-secondary/20 to-accent/20 rounded-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#FF7B29]/20 via-[#FFB627]/20 to-[#FF9D4D]/20 rounded-2xl" />
         </motion.div>
       </div>
     </section>
