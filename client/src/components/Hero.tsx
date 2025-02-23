@@ -2,8 +2,35 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { SiSalesforce, SiJavascript, SiReact } from "react-icons/si";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Hero() {
+  const { toast } = useToast();
+
+  const handlePortfolioClick = async () => {
+    try {
+      const response = await fetch('/api/resume');
+      if (!response.ok) throw new Error('Failed to fetch resume');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Saransh_Batham_Resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download resume. Please try again later.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <section className="min-h-[80vh] flex items-center">
       <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -30,9 +57,9 @@ export default function Hero() {
             <SiReact className="w-8 h-8 text-[#61DAFB]" />
           </div>
           <div className="space-x-4">
-            <Link href="/portfolio">
-              <Button size="lg" className="bg-[#0A1A2F] hover:bg-[#1E3A8A]">View Portfolio</Button>
-            </Link>
+            <Button size="lg" className="bg-[#0A1A2F] hover:bg-[#1E3A8A]" onClick={handlePortfolioClick}>
+              Download Resume
+            </Button>
             <a href="mailto:Saranshbatham21@gmail.com">
               <Button variant="outline" size="lg" className="border-[#0A1A2F] text-[#0A1A2F] hover:bg-[#0A1A2F]/10">
                 Contact Me

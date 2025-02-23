@@ -21,6 +21,13 @@ export const blogPosts = pgTable("blog_posts", {
   salesforceId: text("salesforce_id").notNull(),
 });
 
+// Schema for Resume from Salesforce
+export const resumeSchema = z.object({
+  fileName: z.string(),
+  fileContent: z.string(), // Base64 encoded PDF
+  lastModified: z.date()
+});
+
 export const insertPortfolioItemSchema = createInsertSchema(portfolioItems).omit({ id: true });
 export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({ id: true });
 
@@ -28,3 +35,4 @@ export type InsertPortfolioItem = z.infer<typeof insertPortfolioItemSchema>;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type PortfolioItem = typeof portfolioItems.$inferSelect;
 export type BlogPost = typeof blogPosts.$inferSelect;
+export type Resume = z.infer<typeof resumeSchema>;

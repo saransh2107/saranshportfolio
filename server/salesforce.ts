@@ -1,5 +1,5 @@
 import jsforce from 'jsforce';
-import { type BlogPost, type InsertBlogPost } from '@shared/schema';
+import { type BlogPost, type Resume } from '@shared/schema';
 
 class SalesforceClient {
   private conn: jsforce.Connection;
@@ -24,7 +24,7 @@ class SalesforceClient {
   async getBlogPosts(): Promise<BlogPost[]> {
     try {
       await this.connect();
-      
+
       const result = await this.conn.query(
         'SELECT Id, Title__c, Content__c, Summary__c, Image_URL__c, Published_Date__c FROM Blog_Post__c ORDER BY Published_Date__c DESC'
       );
@@ -47,7 +47,7 @@ class SalesforceClient {
   async getBlogPost(id: string): Promise<BlogPost | undefined> {
     try {
       await this.connect();
-      
+
       const result = await this.conn.query(
         'SELECT Id, Title__c, Content__c, Summary__c, Image_URL__c, Published_Date__c FROM Blog_Post__c WHERE Id = $1',
         [id]
@@ -69,6 +69,39 @@ class SalesforceClient {
       };
     } catch (error) {
       console.error('Error fetching blog post from Salesforce:', error);
+      throw error;
+    }
+  }
+
+  async getResume(): Promise<Resume> {
+    try {
+      await this.connect();
+
+      // Query for the resume ContentDocument
+      const result = await this.conn.query(
+        'SELECT Id, Title, VersionData, LastModifiedDate FROM ContentDocument WHERE Title = \'Saransh_Batham_Resume.pdf\' ORDER BY LastModifiedDate DESC LIMIT 1'
+      );
+
+      if (result.records.length === 0) {
+        throw new Error('Resume not found in Salesforce');
+      }
+
+      const record = result.records[0];
+
+      // Get the actual file content
+      const content = await this.conn.request({
+        method: 'GET',
+        url: `/services/data/v53.0/sobjects/ContentDocument/${record.Id}/VersionData`,
+        encoding: null // Get as binary
+      });
+
+      return {
+        fileName: record.Title,
+        fileContent: content.toString('base64'),
+        lastModified: new Date(record.LastModifiedDate)
+      };
+    } catch (error) {
+      console.error('Error fetching resume from Salesforce:', error);
       throw error;
     }
   }

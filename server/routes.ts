@@ -33,6 +33,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(post);
   });
 
+  // Resume route
+  app.get("/api/resume", async (_req, res) => {
+    try {
+      const resume = await storage.getResume();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${resume.fileName}`);
+      const buffer = Buffer.from(resume.fileContent, 'base64');
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error serving resume:', error);
+      res.status(500).json({ message: "Error fetching resume" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

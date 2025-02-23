@@ -1,4 +1,4 @@
-import { type PortfolioItem, type BlogPost, type InsertPortfolioItem, type InsertBlogPost } from "@shared/schema";
+import { type PortfolioItem, type BlogPost, type InsertPortfolioItem, type InsertBlogPost, type Resume } from "@shared/schema";
 import { salesforce } from "./salesforce";
 
 export interface IStorage {
@@ -11,6 +11,9 @@ export interface IStorage {
   getBlogPosts(): Promise<BlogPost[]>;
   getBlogPost(id: number): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+
+  // Resume
+  getResume(): Promise<Resume>;
 }
 
 export class Storage implements IStorage {
@@ -46,7 +49,7 @@ export class Storage implements IStorage {
     });
   }
 
-  // Portfolio methods remain unchanged
+  // Portfolio methods
   async getPortfolioItems(): Promise<PortfolioItem[]> {
     return Array.from(this.portfolioItems.values());
   }
@@ -62,7 +65,7 @@ export class Storage implements IStorage {
     return portfolioItem;
   }
 
-  // Blog methods now use Salesforce
+  // Blog methods
   async getBlogPosts(): Promise<BlogPost[]> {
     return salesforce.getBlogPosts();
   }
@@ -78,6 +81,11 @@ export class Storage implements IStorage {
 
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
     throw new Error('Blog posts can only be created in Salesforce');
+  }
+
+  // Resume method
+  async getResume(): Promise<Resume> {
+    return salesforce.getResume();
   }
 }
 
