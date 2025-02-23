@@ -1,34 +1,31 @@
 import { type PortfolioItem, type BlogPost, type InsertPortfolioItem, type InsertBlogPost } from "@shared/schema";
+import { salesforce } from "./salesforce";
 
 export interface IStorage {
   // Portfolio
   getPortfolioItems(): Promise<PortfolioItem[]>;
   getPortfolioItem(id: number): Promise<PortfolioItem | undefined>;
   createPortfolioItem(item: InsertPortfolioItem): Promise<PortfolioItem>;
-  
+
   // Blog
   getBlogPosts(): Promise<BlogPost[]>;
   getBlogPost(id: number): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
 }
 
-export class MemStorage implements IStorage {
+export class Storage implements IStorage {
   private portfolioItems: Map<number, PortfolioItem>;
-  private blogPosts: Map<number, BlogPost>;
   private currentPortfolioId: number;
-  private currentBlogId: number;
 
   constructor() {
     this.portfolioItems = new Map();
-    this.blogPosts = new Map();
     this.currentPortfolioId = 1;
-    this.currentBlogId = 1;
-    
-    // Initialize with mock data
-    this.initializeMockData();
+
+    // Initialize with mock portfolio data
+    this.initializeMockPortfolio();
   }
 
-  private initializeMockData() {
+  private initializeMockPortfolio() {
     const portfolioImages = [
       "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40",
       "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
@@ -38,16 +35,6 @@ export class MemStorage implements IStorage {
       "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8"
     ];
 
-    const blogImages = [
-      "https://images.unsplash.com/photo-1472289065668-ce650ac443d2",
-      "https://images.unsplash.com/photo-1493723843671-1d655e66ac1c",
-      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634",
-      "https://images.unsplash.com/photo-1513151233558-d860c5398176",
-      "https://images.unsplash.com/photo-1436262513933-a0b06755c784",
-      "https://images.unsplash.com/photo-1487088678257-3a541e6e3922"
-    ];
-
-    // Mock portfolio items
     portfolioImages.forEach((imageUrl, index) => {
       this.createPortfolioItem({
         title: `Project ${index + 1}`,
@@ -57,20 +44,9 @@ export class MemStorage implements IStorage {
         link: `https://example.com/project-${index + 1}`
       });
     });
-
-    // Mock blog posts
-    blogImages.forEach((imageUrl, index) => {
-      this.createBlogPost({
-        title: `Blog Post ${index + 1}`,
-        content: `Content for blog post ${index + 1}...`,
-        summary: `Summary for blog post ${index + 1}`,
-        imageUrl,
-        publishedAt: new Date(),
-        salesforceId: `SF-${index + 1}`
-      });
-    });
   }
 
+  // Portfolio methods remain unchanged
   async getPortfolioItems(): Promise<PortfolioItem[]> {
     return Array.from(this.portfolioItems.values());
   }
@@ -86,20 +62,23 @@ export class MemStorage implements IStorage {
     return portfolioItem;
   }
 
+  // Blog methods now use Salesforce
   async getBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values());
+    return salesforce.getBlogPosts();
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    return this.blogPosts.get(id);
+    try {
+      return await salesforce.getBlogPost(id.toString());
+    } catch (error) {
+      console.error('Error fetching blog post:', error);
+      return undefined;
+    }
   }
 
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
-    const id = this.currentBlogId++;
-    const blogPost = { ...post, id };
-    this.blogPosts.set(id, blogPost);
-    return blogPost;
+    throw new Error('Blog posts can only be created in Salesforce');
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new Storage();
