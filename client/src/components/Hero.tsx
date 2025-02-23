@@ -47,7 +47,7 @@ export default function Hero() {
           className="relative h-[500px] hidden md:block"
         >
           <img 
-            src="/attached_assets/Saransh Pic-200kb.jpg"
+            src="/attached_assets/Saransh Pic-min.jpg"
             alt="Saransh Batham"
             className="absolute inset-0 w-full h-full object-cover rounded-2xl"
           />
