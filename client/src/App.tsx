@@ -7,32 +7,7 @@ import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Portfolio from "@/pages/Portfolio";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Link } from "wouter";
-
-function Navigation() {
-  return (
-    <NavigationMenu className="max-w-screen-xl mx-auto p-4">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href="/">
-            <NavigationMenuLink className="cursor-pointer">Home</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/portfolio">
-            <NavigationMenuLink className="cursor-pointer">Portfolio</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/blog">
-            <NavigationMenuLink className="cursor-pointer">Blog</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
-}
+import Navigation from "@/components/Navigation";
 
 function Router() {
   return (
