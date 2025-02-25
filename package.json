@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx server/index.ts",
+    "dev": "node --loader tsx server/index.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
@@ -56,6 +56,7 @@
     "framer-motion": "^11.13.1",
     "input-otp": "^1.2.4",
     "jsforce": "^3.6.5",
+    "latest": "^0.2.0",
     "lucide-react": "^0.453.0",
     "memorystore": "^1.6.7",
     "passport": "^0.7.0",
